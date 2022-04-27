@@ -209,3 +209,4 @@ Control.system-ca-bundle
 GitHub.sublime-settings
 
 
+*.DS_Store
