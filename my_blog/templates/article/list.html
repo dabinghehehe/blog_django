@@ -4,7 +4,7 @@
 
 <!-- 写入 base.html 中定义的 title -->
 {% block title %}
-    首页
+首页
 {% endblock title %}
 
 <!-- 写入 base.html 中定义的 content -->
@@ -17,7 +17,7 @@
         {% for article in articles %}
         <!-- 文章内容 -->
         <div class="col-4 mb-4">
-        <!-- 卡片容器 -->
+            <!-- 卡片容器 -->
             <div class="card h-100">
                 <!-- 标题 -->
                 <h4 class="card-header">{{ article.title }}</h4>
@@ -27,7 +27,7 @@
                 </div>
                 <!-- 注脚 -->
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary">阅读本文</a>
+                    <a href="{% url 'article:article_detail' article.id %}" class="btn btn-primary">阅读本文</a>
                 </div>
             </div>
         </div>

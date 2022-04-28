@@ -12,3 +12,6 @@ pip3 config list
 ## 创建管理员账号（Superuser）
 python manage.py createsuperuser
 
+## 创建用户管理模块app
+python manage.py startapp userprofile
+
