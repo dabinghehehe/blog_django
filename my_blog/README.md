@@ -15,3 +15,7 @@ python manage.py createsuperuser
 ## 创建用户管理模块app
 python manage.py startapp userprofile
 
+## 依赖导出、安装
+pip freeze > requirements.txt
+pip install -r requirements.txt
+
