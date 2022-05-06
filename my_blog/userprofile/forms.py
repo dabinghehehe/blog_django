@@ -1,6 +1,8 @@
+from dataclasses import fields
 from pyexpat import model
 from django import forms
 from django.contrib.auth.models import User
+from .models import Profile
 
 
 class UserLoginForm(forms.Form):
@@ -17,7 +19,6 @@ class UserRegisterForm(forms.ModelForm):
         model = User
         fields = ('username', 'email')
 
-    
     # 对两次输入的密码是否一致进行检查
     def clean_password2(self):
         data = self.cleaned_data
@@ -25,3 +26,9 @@ class UserRegisterForm(forms.ModelForm):
             return data.get('password')
         else:
             raise forms.ValidationError("密码输入不一致,请重试。")
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('phone', 'avatar', 'bio')
