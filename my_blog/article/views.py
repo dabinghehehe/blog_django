@@ -2,49 +2,71 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import markdown
 
-import article
 from .models import ArticlePost
+from comment.models import Comment
 from .forms import ArticlePostForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 def article_list(request):
-    # 取出所有博客文章
-    article_list = ArticlePost.objects.all()
+    search = request.GET.get('search')
+    order = request.GET.get('order')
+    # 用户搜索逻辑
+    if search:
+        if order == 'total_views':
+            # 用 Q对象 进行联合搜索
+            article_list = ArticlePost.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            ).order_by('-total_views')
+        else:
+            article_list = ArticlePost.objects.filter(
+                Q(title__icontains=search) |
+                Q(body__icontains=search)
+            )
+    else:
+        # 将 search 参数重置为空
+        search = ''
+        if order == 'total_views':
+            article_list = ArticlePost.objects.all().order_by('-total_views')
+        else:
+            article_list = ArticlePost.objects.all()
 
-    # 每页显示 1 篇文章
+    # 每页显示 3 篇文章
     paginator = Paginator(article_list, 3)
     # 获取 url 中的页码
     page = request.GET.get('page')
     # 将导航对象相应的页码内容返回给 articles
     articles = paginator.get_page(page)
 
-    context = {'articles': articles}
+    context = {'articles': articles, 'order': order, 'search': search}
     return render(request, 'article/list.html', context)
 
 
 def article_detail(request, id):
     # 取出相应的文章
     article = ArticlePost.objects.get(id=id)
+    # 取出文章评论
+    comments = Comment.objects.filter(article=id)
 
     # 浏览量 +1
     article.total_views += 1
     article.save(update_fields=['total_views'])
 
-    # 将markdown语法渲染成html样式
-    article.body = markdown.markdown(article.body,
-                                     extensions=[
-                                         # 包含 缩写、表格等常用扩展
-                                         'markdown.extensions.extra',
-                                         # 语法高亮扩展
-                                         'markdown.extensions.codehilite',
-                                     ]
-                                     )
+    md = markdown.Markdown(
+        extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+            'markdown.extensions.toc',
+        ]
+    )
+    article.body = md.convert(article.body)
 
-    # 需要传递给模板的对象
-    context = {'article': article}
+    # 添加comments上下文
+    context = {'article': article, 'toc': md.toc, 'comments': comments}
     # render函数：载入模板，并返回context对象
     return render(request, 'article/detail.html', context)
 
