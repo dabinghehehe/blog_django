@@ -20,7 +20,8 @@
                 </a>
             </li>
             <li class="breadcrumb-item">
-                <a href="{% url 'article:article_list' %}?order=total_views&search={{ search }}&column={{ column }}&tag={{ tag }}">
+                <a
+                    href="{% url 'article:article_list' %}?order=total_views&search={{ search }}&column={{ column }}&tag={{ tag }}">
                     最热
                 </a>
             </li>
@@ -51,8 +52,14 @@
     <div class="row mt-2">
 
         {% for article in articles %}
+        <!-- 标题图 -->
+        {% if article.avatar %}
+        <div class="col-3">
+            <img src="{{ article.avatar.url }}" alt="avatar" style="max-width:100%; border-radius: 20px">
+        </div>
+        {% endif %}
         <!-- 文章内容 -->
-        <div class="col-12">
+        <div class="col">
             <!-- 栏目 -->
             {% if article.column %}
             <button type="button" class="btn btn-sm mb-2
@@ -104,6 +111,7 @@
             </p>
             <hr>
         </div>
+        <hr style="width: 100%;" />
         {% endfor %}
     </div>
 
@@ -113,7 +121,8 @@
             <span class="step-links">
                 <!-- 如果不是第一页，则显示上翻按钮 -->
                 {% if articles.has_previous %}
-                <a href="?page=1&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}" class="btn btn-success">
+                <a href="?page=1&order={{ order }}&search={{ search }}&column={{ column }}&tag={{ tag }}"
+                    class="btn btn-success">
                     &laquo; 1
                 </a>
                 <span>...</span>

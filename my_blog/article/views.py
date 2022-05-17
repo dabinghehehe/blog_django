@@ -89,7 +89,7 @@ def article_detail(request, id):
 def article_create(request):
     # 判断用户是否提交数据
     if request.method == "POST":
-        article_post_form = ArticlePostForm(data=request.POST)
+        article_post_form = ArticlePostForm(request.POST, request.FILES)
     # 判断提交的数据是否满足模型的要求
         if article_post_form.is_valid():
             # 保存数据，但暂时不提交到数据库中
