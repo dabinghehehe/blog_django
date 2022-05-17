@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 
 class ArticleColumn(models.Model):
@@ -43,6 +44,8 @@ class ArticlePost(models.Model):
         on_delete=models.CASCADE,
         related_name='article'
     )
+    # 文章标签
+    tags = TaggableManager(blank=True)
 
     # 内部类 class Meta 用于给 model 定义元数据
     class Meta:
